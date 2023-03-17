@@ -135,7 +135,9 @@ class SplitwiseAPI:
         response = self.session.get(url)
         return response.json()
 
-    def create_expense(self, group_id, description, cost, users, details=None, currency_code="USD"):
+    def create_expense(
+        self, group_id, description, cost, users, date=None, details=None, currency_code="USD"
+    ):
         """
         Create an expense for a Splitwise group.
 
@@ -163,6 +165,8 @@ class SplitwiseAPI:
             "users__0__owed_share": users[0]["owed_share"],
             "users__0__paid_share": users[0]["paid_share"],
         }
+        if date:
+            payload["date"] = date
         if details:
             payload["details"] = json.dumps(details)
         if len(users) > 1:

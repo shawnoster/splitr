@@ -2,10 +2,14 @@
 
 import logging
 import os
+from datetime import datetime
 
 from dotenv import load_dotenv
 
 from splitr.splitwise import SplitwiseAPI
+
+USER_ID_SHAWN = 13065056
+USER_ID_SHANNON = 13065035
 
 # Set up logging
 logging.basicConfig(
@@ -20,17 +24,23 @@ CLIENT_SECRET = os.environ.get("client_secret")
 
 splitwise = SplitwiseAPI(CLIENT_ID, CLIENT_SECRET)
 
-user = splitwise.get_current_user()
-print(user)
 
-expense = splitwise.create_expense(
-    group_id=0,
-    description="Pizza",
-    cost=50.0,
-    users=[
-        {"user_id": 13065056, "owed_share": "25", "paid_share": "50"},
-        {"user_id": 13065035, "owed_share": "25", "paid_share": "0"},
-    ],
-)
+def split_expense(date, description, amount):
+    owed_to_me = amount / 2
 
-print(expense)
+    date_obj = datetime.strptime(date, "%m/%d/%Y")
+    iso_date = date_obj.isoformat()
+
+    expense = splitwise.create_expense(
+        group_id=0,
+        description=description,
+        cost=amount,
+        date=iso_date,
+        users=[
+            {"user_id": USER_ID_SHAWN, "owed_share": f"{amount - owed_to_me}", "paid_share": f"{amount}"},
+            {"user_id": USER_ID_SHANNON, "owed_share": f"{owed_to_me}", "paid_share": "0"},
+        ],
+    )
+
+
+split_expense("3/11/2023", "McDonald's", 17.58)
