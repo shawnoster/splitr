@@ -2,6 +2,8 @@
 
 import logging
 import os
+import argparse
+import csv
 from datetime import datetime
 
 from dotenv import load_dotenv
@@ -25,10 +27,10 @@ CLIENT_SECRET = os.environ.get("client_secret")
 splitwise = SplitwiseAPI(CLIENT_ID, CLIENT_SECRET)
 
 
-def split_expense(date, description, amount):
+def split_expense(date: str, description: str, amount: float):
     owed_to_me = amount / 2
 
-    date_obj = datetime.strptime(date, "%m/%d/%Y")
+    date_obj = datetime.strptime(date, "%Y-%m-%d")
     iso_date = date_obj.isoformat()
 
     expense = splitwise.create_expense(
@@ -43,4 +45,17 @@ def split_expense(date, description, amount):
     )
 
 
-split_expense("3/11/2023", "McDonald's", 17.58)
+def main():
+    parser = argparse.ArgumentParser(description="Read a CSV file")
+    parser.add_argument("filename", type=str, help="Path to the CSV file")
+    args = parser.parse_args()
+
+    with open(args.filename, "r") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            name = row["Custom Name"] or row["Name"]
+            split_expense(row["Date"], name, float(row["Amount"]))
+
+
+if __name__ == "__main__":
+    main()
