@@ -21,8 +21,8 @@ logging.basicConfig(
 )
 
 load_dotenv()
-CLIENT_ID = os.environ.get("client_id")
-CLIENT_SECRET = os.environ.get("client_secret")
+CLIENT_ID = os.environ.get("CLIENT_ID")
+CLIENT_SECRET = os.environ.get("CLIENT_SECRET")
 
 splitwise = SplitwiseAPI(CLIENT_ID, CLIENT_SECRET)
 
