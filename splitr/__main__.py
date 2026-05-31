@@ -20,11 +20,10 @@ logging.basicConfig(
     handlers=[logging.StreamHandler()],
 )
 
-load_dotenv()
-CLIENT_ID = os.environ.get("client_id")
-CLIENT_SECRET = os.environ.get("client_secret")
+SPLITWISE_CLIENT_ID = os.environ.get("SPLITWISE_CLIENT_ID")
+SPLITWISE_CLIENT_SECRET = os.environ.get("SPLITWISE_CLIENT_SECRET")
 
-splitwise = SplitwiseAPI(CLIENT_ID, CLIENT_SECRET)
+splitwise = SplitwiseAPI(SPLITWISE_CLIENT_ID, SPLITWISE_CLIENT_SECRET)
 
 
 def split_expense(date: str, description: str, amount: float):
